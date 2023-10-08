@@ -1,0 +1,109 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <script src="{% static 'js/tailwind.js' %}"></script>
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        $(document).ready(function () {
+            $("#calcresult").html(0);
+            let isInit = true
+            $("input").click(function () {
+                let value = $(this).val();
+                let old = $('#calcresult').html();
+                let output;
+                switch (value) {
+                    case "CE":
+                        $("#calcresult").html(0);
+                        isInit = true
+                        break
+                    case "=":
+                        $.ajax({
+                            url: '/compute/',                   //调用Django后台服务器计算公式
+                            type: 'POST',                       //请求类型
+                            data: {
+                                'code': old   //获取文本框中的公式
+                            },
+                            dataType: 'json',                    //期望获得的响应类型为json
+                            success: (data) => { //在请求成功后调用该回调函数输出结果
+                                $('#calcresult').html(data["result"])
+                            }  
+                        })
+                        break
+                    default:
+                        output = isInit ? value : old + value
+                        isInit = false
+                }
+
+                $('#calcresult').html(output)
+            });
+        });
+    </script>
+    <div class="container flex justify-center items-center h-screen bg-gray-200">
+        <div class="transition  flex flex-col bg-white/60 p-8 backdrop-blur hover:shadow  rounded-[30px] ">
+            <div class="border-b-px p-3 text-right">
+                <h1 id="calcresult" class="text-4xl font-semibold ">
+                </h1>
+            </div>
+
+            <div class="flex flex-col gap-2 p-2">
+                <div class="grid grid-cols-4 text-xl gap-2">
+                    <input type="button" value="+"
+                        class="cursor-pointer backdrop-blur transition-all px-[45px] py-[15px] bg-white/75 rounded-lg hover:scale-110 hover:bg-black/5" />
+
+                    <input type="button" value="1"
+                        class="cursor-pointer backdrop-blur transition-all px-[45px] py-[15px] bg-white/75 rounded-lg hover:scale-110  hover:bg-black/5" />
+                    <input type="button" value="2"
+                        class="cursor-pointer backdrop-blur transition-all px-[45px] py-[15px] bg-white/75 rounded-lg hover:scale-110 hover:bg-black/5" />
+                    <input type="button" value="3"
+                        class="cursor-pointer backdrop-blur transition-all px-[45px] py-[15px] bg-white/75 rounded-lg hover:scale-110 hover:bg-black/5" />
+                </div>
+                <div class="grid grid-cols-4 text-xl gap-2">
+                    <input type="button" value="-"
+                        class="cursor-pointer backdrop-blur transition-all px-[45px] py-[15px] bg-white/75 rounded-lg hover:scale-110 hover:bg-black/5" />
+
+                    <input type="button" value="4"
+                        class="cursor-pointer backdrop-blur transition-all px-[45px] py-[15px] bg-white/75 rounded-lg hover:scale-110 hover:bg-black/5" />
+                    <input type="button" value="5"
+                        class="cursor-pointer backdrop-blur transition-all px-[45px] py-[15px] bg-white/75 rounded-lg hover:scale-110 hover:bg-black/5" />
+                    <input type="button" value="6"
+                        class="cursor-pointer backdrop-blur transition-all px-[45px] py-[15px] bg-white/75 rounded-lg hover:scale-110 hover:bg-black/5" />
+                </div>
+
+                <div class="grid grid-cols-4 text-xl gap-2">
+                    <input type="button" value="*"
+                        class="cursor-pointer backdrop-blur transition-all px-[45px] py-[15px] bg-white/75 rounded-lg hover:scale-110 hover:bg-black/5" />
+
+                    <input type="button" value="7"
+                        class="cursor-pointer backdrop-blur transition-all px-[45px] py-[15px] bg-white/75 rounded-lg hover:scale-110 hover:bg-black/5" />
+                    <input type="button" value="8"
+                        class="cursor-pointer backdrop-blur transition-all px-[45px] py-[15px] bg-white/75 rounded-lg hover:scale-110 hover:bg-black/5" />
+                    <input type="button" value="9"
+                        class="cursor-pointer backdrop-blur transition-all px-[45px] py-[15px] bg-white/75 rounded-lg hover:scale-110 hover:bg-black/5" />
+                </div>
+                <div class="grid grid-cols-4 text-xl gap-2">
+                    <input type="button" value="/"
+                        class="cursor-pointer backdrop-blur transition-all px-[45px] py-[15px] bg-white/75 rounded-lg hover:scale-110 hover:bg-black/5" />
+                    <input type="button" value="CE"
+                        class="cursor-pointer backdrop-blur transition-all px-[45px] py-[15px] bg-white/75 rounded-lg hover:scale-110 hover:bg-black/5" />
+
+                    <input type="button" value="="
+                        class="col-span-2  font-semibold cursor-pointer backdrop-blur transition-all px-[45px] py-[15px] bg-blue-500 rounded-lg hover:scale-105 hover:bg-blue-600 text-center text-2xl" />
+
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</body>
+
+</html>
